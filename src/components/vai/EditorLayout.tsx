@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { NavigationSidebar } from './NavigationSidebar';
 import { SpatialCanvas } from './SpatialCanvas';
 import { InspectorPanel } from './InspectorPanel';
-import { mockAssets, mockStations, mockRooms } from '@/data/mock-data';
+import { mockAssets, mockStations, mockRooms, mockZones } from '@/data/mock-data';
 import { Asset } from '@/types/vai';
 
 export const EditorLayout = () => {
@@ -12,6 +12,7 @@ export const EditorLayout = () => {
 
   const activeRoom = mockRooms.find(r => r.id === activeRoomId);
   const roomStations = mockStations.filter(s => s.roomId === activeRoomId);
+  const roomZones = mockZones.filter(z => z.roomId === activeRoomId);
 
   const selectedStation = selectedStationId ? mockStations.find(s => s.id === selectedStationId) : null;
   const stationAssets = selectedStation ? mockAssets.filter(a => a.stationId === selectedStation.id) : [];
@@ -23,10 +24,16 @@ export const EditorLayout = () => {
     return parts.join(' › ');
   }, [activeRoom, selectedStation]);
 
+  const departments = useMemo(() => {
+    const deps = new Set(mockStations.map(s => s.department).filter(Boolean) as string[]);
+    return [...deps];
+  }, []);
+
   const stats = useMemo(() => ({
     total: mockAssets.length,
     active: mockAssets.filter(a => a.status === 'active').length,
     missing: mockAssets.filter(a => a.status === 'missing').length,
+    maintenance: mockAssets.filter(a => a.status === 'maintenance').length,
     unassigned: mockAssets.filter(a => !a.stationId).length,
   }), []);
 
@@ -51,13 +58,16 @@ export const EditorLayout = () => {
         activeRoomId={activeRoomId}
         onSelectRoom={setActiveRoomId}
         stats={stats}
+        departments={departments}
       />
 
       <SpatialCanvas
         stations={roomStations}
         assets={mockAssets}
+        zones={roomZones}
         selectedStationId={selectedStationId}
         onSelectStation={handleSelectStation}
+        roomLabel={activeRoom?.name}
       />
 
       <InspectorPanel

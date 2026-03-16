@@ -1,16 +1,19 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { Station, Asset } from '@/types/vai';
+import { useState, useCallback, useRef } from 'react';
+import { Station, Asset, Zone } from '@/types/vai';
 import { StationBlock } from './StationBlock';
+import { ZoneBlock } from './ZoneBlock';
 import { CanvasToolbar } from './CanvasToolbar';
 
 interface SpatialCanvasProps {
   stations: Station[];
   assets: Asset[];
+  zones: Zone[];
   selectedStationId?: string | null;
   onSelectStation: (id: string | null) => void;
+  roomLabel?: string;
 }
 
-export const SpatialCanvas = ({ stations, assets, selectedStationId, onSelectStation }: SpatialCanvasProps) => {
+export const SpatialCanvas = ({ stations, assets, zones, selectedStationId, onSelectStation, roomLabel }: SpatialCanvasProps) => {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
@@ -56,7 +59,6 @@ export const SpatialCanvas = ({ stations, assets, selectedStationId, onSelectSta
       onWheel={handleWheel}
       onMouseDown={(e) => {
         handleMouseDown(e);
-        // Click on empty canvas = deselect
         if (e.target === canvasRef.current || (e.target as HTMLElement).classList.contains('canvas-inner')) {
           onSelectStation(null);
         }
@@ -66,7 +68,15 @@ export const SpatialCanvas = ({ stations, assets, selectedStationId, onSelectSta
       onMouseLeave={handleMouseUp}
       style={{ cursor: isPanning ? 'grabbing' : 'default' }}
     >
-      {/* Room boundary label */}
+      {/* Room label */}
+      {roomLabel && (
+        <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+          <span className="px-3 py-1.5 rounded-lg vai-surface text-xs font-semibold text-foreground tracking-tight">
+            {roomLabel}
+          </span>
+        </div>
+      )}
+
       <div
         className="canvas-inner absolute inset-0"
         style={{
@@ -75,12 +85,10 @@ export const SpatialCanvas = ({ stations, assets, selectedStationId, onSelectSta
           willChange: 'transform',
         }}
       >
-        {/* Room boundary */}
-        <div className="absolute top-4 left-4 right-4 bottom-4 border border-dashed border-border/50 rounded-2xl pointer-events-none">
-          <span className="absolute -top-3 left-6 px-2 bg-vai-canvas text-[11px] font-medium text-muted-foreground">
-            Sala 101 — TI
-          </span>
-        </div>
+        {/* Zones */}
+        {zones.map(zone => (
+          <ZoneBlock key={zone.id} zone={zone} />
+        ))}
 
         {/* Stations */}
         {stations.map(station => (
