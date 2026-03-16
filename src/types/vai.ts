@@ -8,10 +8,11 @@ export interface Asset {
   id: string;
   name: string;
   type: AssetType;
-  tag: string; // patrimônio
+  tag: string;
   serial?: string;
   status: AssetStatus;
   custodian?: string;
+  department?: string;
   stationId?: string;
   lastVerified?: string;
   history?: HistoryEntry[];
@@ -33,7 +34,21 @@ export interface Station {
   width: number;
   height: number;
   type: FurnitureType;
-  assets: string[]; // asset IDs
+  assets: string[];
+  roomId: string;
+  custodian?: string;
+  department?: string;
+  zoneId?: string;
+}
+
+export interface Zone {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color?: string;
   roomId: string;
 }
 
@@ -44,14 +59,15 @@ export interface Room {
   sector: string;
   unit: string;
   stations: string[];
+  zones?: string[];
 }
 
 export interface CanvasElement {
   id: string;
-  type: 'station' | 'furniture';
+  type: 'station' | 'furniture' | 'zone';
   x: number;
   y: number;
   width: number;
   height: number;
-  data: Station;
+  data: Station | Zone;
 }
