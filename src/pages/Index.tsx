@@ -1,5 +1,5 @@
-import { EditorLayout } from '@/components/vai/EditorLayout';
+import { FloorPlanEditor } from '@/components/floor-plan/FloorPlanEditor';
 
-const Index = () => <EditorLayout />;
+const Index = () => <FloorPlanEditor />;
 
 export default Index;
