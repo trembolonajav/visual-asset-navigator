@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useReducer, ReactNode } from 'react';
 import { FPState, FPAction, FPElement, FPWall } from '@/types/floor-plan';
 
 const GRID = 20;
@@ -49,7 +49,7 @@ function reducer(state: FPState, action: FPAction): FPState {
     case 'DUPLICATE_ELEMENT': {
       const src = state.elements.find(e => e.id === action.id);
       if (!src) return state;
-      const dup: FPElement = { ...src, id: crypto.randomUUID(), x: src.x + GRID, y: src.y + GRID };
+      const dup: FPElement = { ...src, id: crypto.randomUUID(), x: src.x + GRID, y: src.y + GRID, isPhysicalBase: false, stationId: undefined };
       const elements = [...state.elements, dup];
       return { ...state, elements, selectedId: dup.id, ...pushHistory(state, elements, state.walls) };
     }
@@ -60,6 +60,14 @@ function reducer(state: FPState, action: FPAction): FPState {
     case 'DELETE_WALL': {
       const walls = state.walls.filter(w => w.id !== action.id);
       return { ...state, walls, selectedId: state.selectedId === action.id ? null : state.selectedId, ...pushHistory(state, state.elements, walls) };
+    }
+    case 'MARK_AS_BASE': {
+      const elements = state.elements.map(e => e.id === action.id ? { ...e, isPhysicalBase: true, stationId: action.stationId } : e);
+      return { ...state, elements, ...pushHistory(state, elements, state.walls) };
+    }
+    case 'UNMARK_BASE': {
+      const elements = state.elements.map(e => e.id === action.id ? { ...e, isPhysicalBase: false, stationId: undefined } : e);
+      return { ...state, elements, ...pushHistory(state, elements, state.walls) };
     }
     case 'SELECT':
       return { ...state, selectedId: action.id };
@@ -79,8 +87,11 @@ function reducer(state: FPState, action: FPAction): FPState {
       const snap = state.history[idx];
       return { ...state, elements: [...snap.elements], walls: [...snap.walls], historyIndex: idx, selectedId: null };
     }
-    case 'LOAD':
-      return { ...state, elements: action.plan.elements, walls: action.plan.walls, selectedId: null, ...pushHistory(state, action.plan.elements, action.plan.walls) };
+    case 'LOAD': {
+      const elements = [...action.plan.elements];
+      const walls = [...action.plan.walls];
+      return { ...state, elements, walls, selectedId: null, history: [{ elements, walls }], historyIndex: 0 };
+    }
     default:
       return state;
   }

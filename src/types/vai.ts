@@ -1,6 +1,6 @@
 export type AssetStatus = 'active' | 'maintenance' | 'missing' | 'transit';
 
-export type AssetType = 'computer' | 'monitor' | 'keyboard' | 'mouse' | 'dock' | 'phone' | 'printer' | 'rack' | 'chair';
+export type AssetType = 'computer' | 'monitor' | 'keyboard' | 'mouse' | 'dock' | 'phone' | 'printer' | 'rack' | 'chair' | 'switch' | 'router' | 'notebook';
 
 export type FurnitureType = 'desk' | 'counter' | 'rack-cabinet' | 'printer-station' | 'wall' | 'door';
 
@@ -29,16 +29,18 @@ export interface HistoryEntry {
 export interface Station {
   id: string;
   label: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  type: FurnitureType;
+  type: string;
+  elementId?: string;
   assets: string[];
   roomId: string;
   custodian?: string;
   department?: string;
   zoneId?: string;
+  capacity?: number;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
 }
 
 export interface Zone {
