@@ -1,20 +1,20 @@
 export type FPTool = 'select' | 'wall' | 'place';
+export type EditorMode = 'mapa' | 'estrutura';
 
 export type FurnitureCategory =
-  | 'estrutura'
-  | 'escritorio'
-  | 'recepcao'
-  | 'banheiro'
-  | 'cozinha'
+  | 'arquitetura'
+  | 'estacoes'
+  | 'dispositivos'
   | 'complementos';
 
 export interface FurnitureTemplate {
   id: string;
   name: string;
   category: FurnitureCategory;
-  width: number;   // in canvas units (1 unit = 20px ≈ 0.5m)
+  width: number;
   height: number;
-  icon: string;     // lucide icon name for sidebar
+  icon: string;
+  canBeBase?: boolean;
 }
 
 export interface FPElement {
@@ -28,6 +28,8 @@ export interface FPElement {
   zIndex: number;
   locked: boolean;
   label?: string;
+  isPhysicalBase?: boolean;
+  stationId?: string;
 }
 
 export interface FPWall {
@@ -67,6 +69,8 @@ export type FPAction =
   | { type: 'SELECT'; id: string | null }
   | { type: 'SET_TOOL'; tool: FPTool }
   | { type: 'SET_PLACING'; templateId: string | null }
+  | { type: 'MARK_AS_BASE'; id: string; stationId: string }
+  | { type: 'UNMARK_BASE'; id: string }
   | { type: 'UNDO' }
   | { type: 'REDO' }
   | { type: 'LOAD'; plan: FloorPlan };

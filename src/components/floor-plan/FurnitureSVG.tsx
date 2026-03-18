@@ -1,20 +1,17 @@
 import React from 'react';
 
-// All SVG renders draw within 0,0 → w,h bounds
-// Stroke and fill use CSS variables for theming
-
 interface SVGProps {
   w: number;
   h: number;
 }
 
-const s = 'hsl(var(--foreground))';         // stroke color
-const sL = 'hsl(var(--foreground) / 0.3)';  // light stroke
-const f = 'hsl(var(--card))';               // fill (white)
-const fS = 'hsl(var(--foreground) / 0.06)'; // subtle fill
+const s = 'hsl(var(--foreground))';
+const sL = 'hsl(var(--foreground) / 0.3)';
+const f = 'hsl(var(--card))';
+const fS = 'hsl(var(--foreground) / 0.06)';
 
 const renders: Record<string, (p: SVGProps) => React.ReactNode> = {
-  // ── Estrutura ──
+  // ── Arquitetura ──
   'door-single': ({ w, h }) => (
     <g>
       <rect x={0} y={0} width={w} height={h} fill={f} stroke="none" />
@@ -68,7 +65,7 @@ const renders: Record<string, (p: SVGProps) => React.ReactNode> = {
     <rect x={0} y={0} width={w} height={h} fill={s} stroke={s} strokeWidth={1} rx={1} opacity={0.4} />
   ),
 
-  // ── Escritório ──
+  // ── Estações de Trabalho ──
   'desk': ({ w, h }) => (
     <g>
       <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={3} />
@@ -86,18 +83,43 @@ const renders: Record<string, (p: SVGProps) => React.ReactNode> = {
     <g>
       <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={3} />
       <line x1={6} y1={h - 8} x2={w - 6} y2={h - 8} stroke={sL} strokeWidth={1} />
-      {/* monitor indicator */}
       <rect x={w*0.35} y={6} width={w*0.3} height={4} fill={s} rx={1} opacity={0.3} />
     </g>
   ),
-  'chair-office': ({ w, h }) => (
+  'bancada': ({ w, h }) => (
     <g>
-      <circle cx={w/2} cy={h/2 + 2} r={w*0.38} fill={f} stroke={s} strokeWidth={1.2} />
-      <path d={`M ${w*0.2} ${h*0.25} Q ${w/2} ${h*0.05} ${w*0.8} ${h*0.25}`} fill="none" stroke={s} strokeWidth={1.5} />
+      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={2} />
+      <line x1={6} y1={h*0.6} x2={w-6} y2={h*0.6} stroke={sL} strokeWidth={0.8} />
+    </g>
+  ),
+  'dual-station': ({ w, h }) => (
+    <g>
+      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={3} />
+      <line x1={w/2} y1={4} x2={w/2} y2={h-4} stroke={sL} strokeWidth={1} strokeDasharray="4 2" />
+      <rect x={w*0.15} y={6} width={w*0.2} height={4} fill={s} rx={1} opacity={0.3} />
+      <rect x={w*0.65} y={6} width={w*0.2} height={4} fill={s} rx={1} opacity={0.3} />
+    </g>
+  ),
+  'operation-desk': ({ w, h }) => (
+    <g>
+      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={3} />
+      <rect x={w*0.1} y={6} width={w*0.2} height={4} fill={s} rx={1} opacity={0.3} />
+      <rect x={w*0.4} y={6} width={w*0.2} height={4} fill={s} rx={1} opacity={0.3} />
+      <rect x={w*0.7} y={6} width={w*0.2} height={4} fill={s} rx={1} opacity={0.3} />
+      <line x1={6} y1={h - 8} x2={w - 6} y2={h - 8} stroke={sL} strokeWidth={1} />
     </g>
   ),
   'meeting-table': ({ w, h }) => (
     <rect x={2} y={2} width={w-4} height={h-4} fill={f} stroke={s} strokeWidth={1.5} rx={h*0.3} />
+  ),
+  'reception-counter': ({ w, h }) => (
+    <g>
+      <path d={`M 1 ${h-1} L 1 ${h*0.3} Q 1 1 ${h*0.3} 1 L ${w - h*0.3} 1 Q ${w-1} 1 ${w-1} ${h*0.3} L ${w-1} ${h-1} Z`} fill={f} stroke={s} strokeWidth={1.5} />
+      <path d={`M 8 ${h-1} L 8 ${h*0.35} Q 8 8 ${h*0.35} 8 L ${w - h*0.35} 8 Q ${w-8} 8 ${w-8} ${h*0.35} L ${w-8} ${h-1}`} fill="none" stroke={sL} strokeWidth={0.8} />
+    </g>
+  ),
+  'partition-baia': ({ w, h }) => (
+    <rect x={0} y={0} width={w} height={h} fill={s} stroke={s} strokeWidth={1} rx={1} opacity={0.35} />
   ),
   'cabinet': ({ w, h }) => (
     <g>
@@ -113,17 +135,87 @@ const renders: Record<string, (p: SVGProps) => React.ReactNode> = {
       ))}
     </g>
   ),
-  'reception-counter': ({ w, h }) => (
+  'chair-office': ({ w, h }) => (
     <g>
-      <path d={`M 1 ${h-1} L 1 ${h*0.3} Q 1 1 ${h*0.3} 1 L ${w - h*0.3} 1 Q ${w-1} 1 ${w-1} ${h*0.3} L ${w-1} ${h-1} Z`} fill={f} stroke={s} strokeWidth={1.5} />
-      <path d={`M 8 ${h-1} L 8 ${h*0.35} Q 8 8 ${h*0.35} 8 L ${w - h*0.35} 8 Q ${w-8} 8 ${w-8} ${h*0.35} L ${w-8} ${h-1}`} fill="none" stroke={sL} strokeWidth={0.8} />
+      <circle cx={w/2} cy={h/2 + 2} r={w*0.38} fill={f} stroke={s} strokeWidth={1.2} />
+      <path d={`M ${w*0.2} ${h*0.25} Q ${w/2} ${h*0.05} ${w*0.8} ${h*0.25}`} fill="none" stroke={s} strokeWidth={1.5} />
     </g>
   ),
-  'partition-baia': ({ w, h }) => (
-    <rect x={0} y={0} width={w} height={h} fill={s} stroke={s} strokeWidth={1} rx={1} opacity={0.35} />
+  'chair-guest': ({ w, h }) => (
+    <g>
+      <rect x={w*0.15} y={h*0.35} width={w*0.7} height={h*0.55} fill={f} stroke={s} strokeWidth={1.2} rx={3} />
+      <path d={`M ${w*0.2} ${h*0.35} Q ${w/2} ${h*0.1} ${w*0.8} ${h*0.35}`} fill="none" stroke={s} strokeWidth={1.2} />
+    </g>
   ),
 
-  // ── Recepção / Sala ──
+  // ── Dispositivos ──
+  'pc-desktop': ({ w, h }) => (
+    <g>
+      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.2} rx={2} />
+      {[0.3, 0.5, 0.7].map(p => (
+        <line key={p} x1={w*0.2} y1={h*p} x2={w*0.8} y2={h*p} stroke={sL} strokeWidth={0.6} />
+      ))}
+      <circle cx={w*0.5} cy={h*0.15} r={1.5} fill={s} opacity={0.4} />
+    </g>
+  ),
+  'notebook': ({ w, h }) => (
+    <g>
+      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.2} rx={2} />
+      <rect x={3} y={3} width={w-6} height={h*0.5} fill={fS} stroke={sL} strokeWidth={0.6} rx={1} />
+      <rect x={w*0.35} y={h*0.7} width={w*0.3} height={h*0.15} fill={fS} stroke={sL} strokeWidth={0.5} rx={1} />
+    </g>
+  ),
+  'monitor-device': ({ w, h }) => (
+    <g>
+      <rect x={1} y={1} width={w-2} height={h*0.6} fill={f} stroke={s} strokeWidth={1.2} rx={2} />
+      <rect x={w*0.4} y={h*0.6} width={w*0.2} height={h*0.2} fill={f} stroke={s} strokeWidth={0.8} />
+      <rect x={w*0.25} y={h*0.8} width={w*0.5} height={h*0.12} fill={f} stroke={s} strokeWidth={0.8} rx={1} />
+    </g>
+  ),
+  'printer': ({ w, h }) => (
+    <g>
+      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={3} />
+      <rect x={w*0.15} y={h*0.15} width={w*0.7} height={h*0.35} fill={fS} stroke={sL} strokeWidth={0.8} rx={2} />
+    </g>
+  ),
+  'rack-server': ({ w, h }) => (
+    <g>
+      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={2} />
+      {[0.15, 0.3, 0.45, 0.6, 0.75, 0.85].map(p => (
+        <line key={p} x1={4} y1={h*p} x2={w-4} y2={h*p} stroke={sL} strokeWidth={0.6} />
+      ))}
+      <line x1={w/2} y1={3} x2={w/2} y2={h-3} stroke={sL} strokeWidth={0.4} />
+    </g>
+  ),
+  'switch-network': ({ w, h }) => (
+    <g>
+      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.2} rx={2} />
+      {Array.from({ length: 8 }, (_, i) => {
+        const portW = (w - 8) / 8 * 0.6;
+        const gap = (w - 8) / 8;
+        return <rect key={i} x={4 + gap * i} y={h*0.25} width={portW} height={h*0.5} fill={fS} stroke={sL} strokeWidth={0.5} rx={0.5} />;
+      })}
+    </g>
+  ),
+  'router': ({ w, h }) => (
+    <g>
+      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.2} rx={3} />
+      <circle cx={w*0.3} cy={h*0.5} r={2} fill={s} opacity={0.3} />
+      <circle cx={w*0.5} cy={h*0.5} r={2} fill={s} opacity={0.3} />
+      <circle cx={w*0.7} cy={h*0.5} r={2} fill={s} opacity={0.3} />
+    </g>
+  ),
+  'phone-ip': ({ w, h }) => (
+    <g>
+      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.2} rx={2} />
+      <rect x={4} y={4} width={w-8} height={h*0.3} fill={fS} stroke={sL} strokeWidth={0.6} rx={1} />
+      <circle cx={w*0.3} cy={h*0.7} r={2} fill={s} opacity={0.2} />
+      <circle cx={w*0.5} cy={h*0.7} r={2} fill={s} opacity={0.2} />
+      <circle cx={w*0.7} cy={h*0.7} r={2} fill={s} opacity={0.2} />
+    </g>
+  ),
+
+  // ── Complementos ──
   'sofa-2': ({ w, h }) => (
     <g>
       <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={4} />
@@ -159,71 +251,6 @@ const renders: Record<string, (p: SVGProps) => React.ReactNode> = {
       ))}
     </g>
   ),
-
-  // ── Banheiro ──
-  'toilet': ({ w, h }) => (
-    <g>
-      <rect x={w*0.2} y={1} width={w*0.6} height={h*0.3} fill={f} stroke={s} strokeWidth={1.2} rx={2} />
-      <ellipse cx={w/2} cy={h*0.6} rx={w*0.4} ry={h*0.35} fill={f} stroke={s} strokeWidth={1.2} />
-    </g>
-  ),
-  'sink': ({ w, h }) => (
-    <g>
-      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.2} rx={3} />
-      <ellipse cx={w/2} cy={h*0.55} rx={w*0.3} ry={h*0.3} fill={fS} stroke={s} strokeWidth={1} />
-    </g>
-  ),
-  'shower': ({ w, h }) => (
-    <g>
-      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={3} />
-      <circle cx={w/2} cy={h/2} r={Math.min(w, h) * 0.15} fill={fS} stroke={s} strokeWidth={1} />
-      <line x1={1} y1={1} x2={w-1} y2={h-1} stroke={sL} strokeWidth={0.8} />
-    </g>
-  ),
-
-  // ── Cozinha ──
-  'counter': ({ w, h }) => (
-    <g>
-      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={2} />
-      <line x1={6} y1={h*0.35} x2={w-6} y2={h*0.35} stroke={sL} strokeWidth={0.8} />
-    </g>
-  ),
-  'fridge': ({ w, h }) => (
-    <g>
-      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={3} />
-      <line x1={4} y1={h*0.45} x2={w-4} y2={h*0.45} stroke={s} strokeWidth={1} />
-      <circle cx={w-8} cy={h*0.25} r={1.5} fill={s} />
-      <circle cx={w-8} cy={h*0.65} r={1.5} fill={s} />
-    </g>
-  ),
-  'stove': ({ w, h }) => (
-    <g>
-      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={2} />
-      {[[0.3, 0.35], [0.7, 0.35], [0.3, 0.65], [0.7, 0.65]].map(([px, py], i) => (
-        <circle key={i} cx={w*px} cy={h*py} r={Math.min(w,h)*0.12} fill="none" stroke={s} strokeWidth={1} />
-      ))}
-    </g>
-  ),
-  'dining-table': ({ w, h }) => (
-    <rect x={2} y={2} width={w-4} height={h-4} fill={f} stroke={s} strokeWidth={1.5} rx={4} />
-  ),
-
-  // ── Complementos ──
-  'printer': ({ w, h }) => (
-    <g>
-      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={3} />
-      <rect x={w*0.15} y={h*0.15} width={w*0.7} height={h*0.35} fill={fS} stroke={sL} strokeWidth={0.8} rx={2} />
-    </g>
-  ),
-  'rack-server': ({ w, h }) => (
-    <g>
-      <rect x={1} y={1} width={w-2} height={h-2} fill={f} stroke={s} strokeWidth={1.5} rx={2} />
-      {[0.15, 0.3, 0.45, 0.6, 0.75, 0.85].map(p => (
-        <line key={p} x1={4} y1={h*p} x2={w-4} y2={h*p} stroke={sL} strokeWidth={0.6} />
-      ))}
-      <line x1={w/2} y1={3} x2={w/2} y2={h-3} stroke={sL} strokeWidth={0.4} />
-    </g>
-  ),
   'plant': ({ w, h }) => (
     <g>
       <circle cx={w/2} cy={h/2} r={w*0.42} fill={fS} stroke={s} strokeWidth={1.2} />
@@ -231,9 +258,7 @@ const renders: Record<string, (p: SVGProps) => React.ReactNode> = {
     </g>
   ),
   'tv': ({ w, h }) => (
-    <g>
-      <rect x={1} y={1} width={w-2} height={h-2} fill={s} stroke={s} strokeWidth={1} rx={1} opacity={0.6} />
-    </g>
+    <rect x={1} y={1} width={w-2} height={h-2} fill={s} stroke={s} strokeWidth={1} rx={1} opacity={0.6} />
   ),
 };
 

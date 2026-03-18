@@ -9,7 +9,7 @@ import { FurnitureCategory } from '@/types/floor-plan';
 export const FloorPlanLibrary = () => {
   const { dispatch } = useFloorPlan();
   const [search, setSearch] = useState('');
-  const [expandedCats, setExpandedCats] = useState<Set<FurnitureCategory>>(new Set(['estrutura', 'escritorio']));
+  const [expandedCats, setExpandedCats] = useState<Set<FurnitureCategory>>(new Set(['arquitetura', 'estacoes']));
 
   const filtered = search.trim()
     ? furnitureTemplates.filter(t => t.name.toLowerCase().includes(search.toLowerCase()))
@@ -28,16 +28,16 @@ export const FloorPlanLibrary = () => {
   };
 
   return (
-    <aside className="w-[256px] h-full border-r border-border bg-card flex flex-col overflow-hidden flex-shrink-0">
+    <aside className="w-[240px] h-full border-r border-border bg-card flex flex-col overflow-hidden flex-shrink-0">
       {/* Header */}
-      <div className="px-4 py-3.5 border-b border-border">
+      <div className="px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
             <LayoutGrid size={13} className="text-primary-foreground" />
           </div>
           <div>
-            <span className="font-bold text-[13px] tracking-tight">VAI Builder</span>
-            <p className="text-[10px] text-muted-foreground leading-none mt-0.5">Planta Baixa 2D</p>
+            <span className="font-bold text-[13px] tracking-tight">VAI Estrutura</span>
+            <p className="text-[10px] text-muted-foreground leading-none mt-0.5">Edição estrutural contextual da sala</p>
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@ export const FloorPlanLibrary = () => {
           <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Buscar elemento..."
+            placeholder="Buscar ativo ou mobiliário..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-secondary/60 border-0 text-xs placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/30"
@@ -100,7 +100,6 @@ export const FloorPlanLibrary = () => {
 };
 
 const LibraryItem = ({ template, onSelect }: { template: (typeof furnitureTemplates)[number]; onSelect: (id: string) => void }) => {
-  // Scale SVG preview to fit a thumbnail
   const previewSize = 36;
   const scale = Math.min(previewSize / template.width, previewSize / template.height) * 0.8;
 
